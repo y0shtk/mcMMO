@@ -1,5 +1,5 @@
 name: mcMMO
-version: ${project.version}-b${BUILD_NUMBER}
+version: ${project.version}
 description: >
   The goal of mcMMO is to take core Minecraft game mechanics and expand them into
   add an extensive and quality RPG experience. Everything in mcMMO has been carefully
@@ -340,7 +340,7 @@ permissions:
             mcmmo.ability.herbalism.greenthumb.plants.crops: true
             mcmmo.ability.herbalism.greenthumb.plants.netherwarts: true
             mcmmo.ability.herbalism.greenthumb.plants.potato: true
-            mcmmo.ability.herbalism.greenthumb.plants.beetroot: true
+            mcmmo.ability.herbalism.greenthumb.plants.beetrootblock: true
     mcmmo.ability.herbalism.greenthumb.plants.carrot:
         description: Allows access to the Green Thumb ability for carrots
     mcmmo.ability.herbalism.greenthumb.plants.cocoa:
@@ -351,7 +351,7 @@ permissions:
         description: Allows access to the Green Thumb ability for netherwart
     mcmmo.ability.herbalism.greenthumb.plants.potato:
         description: Allows access to the Green Thumb ability for potatoes
-    mcmmo.ability.herbalism.greenthumb.plants.beetroot:
+    mcmmo.ability.herbalism.greenthumb.plants.beetrootblock:
         description: Allows access to the Green Thumb ability for beetrootes
     mcmmo.ability.herbalism.hylianluck:
         description: Allows access to the Hylian Luck ability
@@ -1900,7 +1900,7 @@ permissions:
         description: Allow reset of skill levels
         children:
             mcmmo.commands.skillreset.all: true
-            mcmmo.commands.skillreset.others.all: false
+            mcmmo.commands.skillreset.others.all: true
     mcmmo.skills.*:
         default: false
         description: Implies all mcmmo.skills permissions.

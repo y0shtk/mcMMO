@@ -125,6 +125,7 @@ public class HerbalismManager extends SkillManager {
         Material material = blockState.getType();
         boolean oneBlockPlant = !(material == Material.CACTUS || material == Material.CHORUS_PLANT || material == Material.SUGAR_CANE_BLOCK);
 
+        // Prevents placing and immediately breaking blocks for exp
         if (oneBlockPlant && mcMMO.getPlaceStore().isTrue(blockState)) {
             return;
         }
@@ -151,16 +152,10 @@ public class HerbalismManager extends SkillManager {
                 processGreenThumbPlants(blockState, greenTerra);
             }
 
-            if (material == Material.DOUBLE_PLANT || material == Material.RED_ROSE || material == Material.LONG_GRASS) {
-                xp = ExperienceConfig.getInstance().getFlowerAndGrassXp(blockState.getData());
+            if(material == Material.CHORUS_FLOWER && blockState.getRawData() != 5) {
+                return;
             }
-            else {
-                if(material == Material.CHORUS_FLOWER && blockState.getRawData() != 5) {
-                    return;
-                }
-                
-                xp = ExperienceConfig.getInstance().getXp(skill, material);
-            }
+            xp = ExperienceConfig.getInstance().getXp(skill, blockState.getData());
 
             if (Config.getInstance().getDoubleDropsEnabled(skill, material) && Permissions.secondaryAbilityEnabled(player, SecondaryAbility.HERBALISM_DOUBLE_DROPS)) {
                 drops = blockState.getBlock().getDrops();
@@ -213,32 +208,10 @@ public class HerbalismManager extends SkillManager {
             return false;
         }
 
-        List<HylianTreasure> treasures;
-
-        switch (blockState.getType()) {
-            case DEAD_BUSH:
-            case LONG_GRASS:
-            case SAPLING:
-                treasures = TreasureConfig.getInstance().hylianFromBushes;
-                break;
-
-            case RED_ROSE:
-            case YELLOW_FLOWER:
-                if (mcMMO.getPlaceStore().isTrue(blockState)) {
-                    mcMMO.getPlaceStore().setFalse(blockState);
-                    return false;
-                }
-
-                treasures = TreasureConfig.getInstance().hylianFromFlowers;
-                break;
-
-            case FLOWER_POT:
-                treasures = TreasureConfig.getInstance().hylianFromPots;
-                break;
-
-            default:
-                return false;
-        }
+        String friendly = StringUtils.getFriendlyConfigMaterialDataString(blockState.getData());
+        if (!TreasureConfig.getInstance().hylianMap.containsKey(friendly))
+            return false;
+        List<HylianTreasure> treasures = TreasureConfig.getInstance().hylianMap.get(friendly);
 
         Player player = getPlayer();
 
@@ -330,7 +303,9 @@ public class HerbalismManager extends SkillManager {
                 return;
         }
 
-        if (!playerInventory.contains(seed, 1)) {
+        ItemStack seedStack = new ItemStack(seed);
+
+        if (!playerInventory.containsAtLeast(seedStack, 1)) {
             return;
         }
 
@@ -342,7 +317,7 @@ public class HerbalismManager extends SkillManager {
             return;
         }
 
-        playerInventory.removeItem(new ItemStack(seed));
+        playerInventory.removeItem(seedStack);
         player.updateInventory(); // Needed until replacement available
         new HerbalismBlockUpdaterTask(blockState).runTaskLater(mcMMO.p, 0);
     }

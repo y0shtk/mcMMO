@@ -240,7 +240,7 @@ public class PlayerListener implements Listener {
                 return;
 
             case IN_GROUND:
-                Block block = player.getTargetBlock((HashSet<Byte>) null, 100);
+                Block block = player.getTargetBlock((HashSet<Material>) null, 100);
 
                 if (fishingManager.canIceFish(block)) {
                     event.setCancelled(true);
@@ -332,7 +332,7 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if ((mcMMOPlayer.isUsingUnarmed() && ItemUtils.isSharable(dropStack)) || mcMMOPlayer.getAbilityMode(AbilityType.BERSERK)) {
+        if ((mcMMOPlayer.isUsingUnarmed() && ItemUtils.isSharable(dropStack) && !Config.getInstance().getUnarmedItemsAsUnarmed()) || mcMMOPlayer.getAbilityMode(AbilityType.BERSERK)) {
             boolean pickupSuccess = Unarmed.handleItemPickup(player.getInventory(), drop);
             boolean cancel = Config.getInstance().getUnarmedItemPickupDisabled() || pickupSuccess;
             event.setCancelled(cancel);
